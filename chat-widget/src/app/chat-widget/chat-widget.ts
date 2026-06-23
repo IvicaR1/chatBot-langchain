@@ -152,8 +152,15 @@ export class ChatWidgetComponent implements AfterViewChecked {
   speak(text: string) {
     if (!window.speechSynthesis) return;
     this.stopSpeaking();
-    const isMk = this.detectLang(text) === 'mk-MK';
-    const utter = new SpeechSynthesisUtterance(text);
+    const clean = text
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .replace(/#{1,6}\s/g, '')
+      .replace(/`/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .trim();
+    const isMk = this.detectLang(clean) === 'mk-MK';
+    const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = isMk ? 'mk-MK' : 'en-US';
     utter.rate = 1;
     utter.voice = this.pickVoice(isMk);
