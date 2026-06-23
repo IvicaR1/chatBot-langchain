@@ -1,7 +1,7 @@
 # main.py
 import streamlit as st
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from knowledge import SYSTEM_PROMPT
 
@@ -44,8 +44,8 @@ st.markdown("""
         <p class="neocom-title">Neocom Assistant</p>
     </div>
     <p class="neocom-subtitle">
-        Hi! I'm the virtual assistant for <strong>Neocom AD Skopje</strong>.
-        Ask me anything about our services, products, or how we can help your business.
+        Hi! I'm NeoBot, a virtual assisstant for <strong>Neocom</strong>.
+        Ask me anything about our services, products or how we can help your business.
     </p>
 """, unsafe_allow_html=True)
 
@@ -54,8 +54,8 @@ st.divider()
 # Model init
 @st.cache_resource
 def get_llm():
-    return ChatOpenAI(
-        model="gpt-4o-mini",
+    return ChatGroq(
+        model="llama-3.3-70b-versatile",
         temperature=0.5,
     )
 
@@ -103,13 +103,13 @@ if user_input := st.chat_input(
                 err = str(e)
                 if "429" in err or "quota" in err.lower() or "rate" in err.lower():
                     reply = (
-                        "⚠️ The AI service is temporarily unavailable due to rate limits. "
+                        "The AI service is temporarily unavailable due to rate limits. "
                         "Please try again in a few minutes, or contact Neocom directly at "
                         "[neocom.com.mk](https://www.neocom.com.mk)."
                     )
                 else:
                     reply = (
-                        "⚠️ Something went wrong. Please try again or visit "
+                        "Something went wrong. Please try again or visit "
                         "[neocom.com.mk](https://www.neocom.com.mk) to reach us directly."
                     )
         st.markdown(reply)
@@ -117,7 +117,6 @@ if user_input := st.chat_input(
     st.session_state.messages.append(AIMessage(content=reply))
     st.rerun()
 
-# Sidebar
 with st.sidebar:
     st.image(
         "https://www.neocom.com.mk/wp-content/uploads/2021/03/neocom-logo.png",
